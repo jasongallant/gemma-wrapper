@@ -331,7 +331,9 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
     script = "#!/bin/bash
 #SBATCH --job-name=gemma-#{scriptfn}
 #SBATCH --ntasks=1
-#SBATCH --time=20:00
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=120g
+#SBATCH -o gemma_permute_%j.out
 srun #{cmd}
 "
     debug.call(script)
