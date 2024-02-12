@@ -349,6 +349,7 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=120g
 #SBATCH -o #{options[:cache_dir]}/gemma_permute_%j.out
+mkdir -p #{local_scratch_dir}
 #{cmd}
 # Copy output from local scratch to final destination
 cp -r #{local_scratch_dir}/* #{options[:cache_dir]}/
