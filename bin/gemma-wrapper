@@ -328,7 +328,7 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
   if options[:slurm]
     # Assuming '/scratch' is the local scratch disk path
     local_scratch_dir = "/mnt/local/jgallant/#{HASH}" # HASH to ensure unique directory
-    FileUtils::mkdir_p local_scratch_dir
+    #FileUtils::mkdir_p local_scratch_dir
 
     # Modify GEMMA_ARGS for local scratch directory usage
     gemma_local_args = GEMMA_ARGS.map { |arg| arg.dup }.tap do |args|
@@ -341,7 +341,7 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
     info.call cmd
     hashi = HASH
     prefix = "#{local_scratch_dir}/#{hashi}"
-    scriptfn  = prefix+".#{chr}.#{permutation}-pbs.sh"
+    scriptfn  = "#{options[:cache_dir]}/#{hashi}.#{chr}.#{permutation}-pbs.sh"
     script = "#!/bin/bash
 #SBATCH --job-name=gemma-#{scriptfn}
 #SBATCH --ntasks=1
@@ -350,6 +350,7 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
 #SBATCH --mem=120g
 #SBATCH -o #{options[:cache_dir]}/gemma_permute_%j.out
 mkdir -p #{local_scratch_dir}
+cd #{local_scratch_dir}
 #{cmd}
 # Copy output from local scratch to final destination
 cp -r #{local_scratch_dir}/* #{options[:cache_dir]}/
