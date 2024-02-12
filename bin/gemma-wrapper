@@ -324,11 +324,16 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
 
   cmd = "#{GEMMA_COMMAND} #{GEMMA_ARGS.join(' ')} #{extra_args.join(' ')}"
   record[:gemma_command] = cmd
+  
+  singularity_cmd, gwas_tools_image, gemma_binary_path = "#{GEMMA_COMMAND}".split(' ', 3)
 
   if options[:slurm]
     # Assuming '/scratch' is the local scratch disk path
     local_scratch_dir = "/mnt/local/jgallant/#{HASH}" # HASH to ensure unique directory
     #FileUtils::mkdir_p local_scratch_dir
+
+    # Reconstruct the Singularity command with the --bind option correctly positioned
+    modified_cmd = "#{singularity_cmd} --bind #{local_scratch_dir}:#{local_scratch_dir} #{gwas_tools_image} #{gemma_binary_path}"
 
     # Modify GEMMA_ARGS for local scratch directory usage
     gemma_local_args = GEMMA_ARGS.map { |arg| arg.dup }.tap do |args|
@@ -336,7 +341,7 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
     end
 
     # Update cmd to use modified arguments for local execution
-    cmd = "#{GEMMA_COMMAND} #{gemma_local_args.join(' ')} #{extra_args.join(' ')}"
+    cmd = "#{modified_cmd} #{gemma_local_args.join(' ')} #{extra_args.join(' ')}"
 
     info.call cmd
     hashi = HASH
