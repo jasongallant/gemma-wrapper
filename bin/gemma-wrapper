@@ -333,7 +333,7 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
     #FileUtils::mkdir_p local_scratch_dir
 
     # Reconstruct the Singularity command with the --bind option correctly positioned
-    modified_cmd = "#{singularity_cmd} --bind #{local_scratch_dir}:#{local_scratch_dir} #{gwas_tools_image} #{gemma_binary_path}"
+    modified_cmd = "singularity exec --bind #{local_scratch_dir}:#{local_scratch_dir} #{gwas_tools_image} #{gemma_binary_path}"
 
     # Modify GEMMA_ARGS for local scratch directory usage
     gemma_local_args = GEMMA_ARGS.map { |arg| arg.dup }.tap do |args|
