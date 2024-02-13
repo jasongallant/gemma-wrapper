@@ -70,6 +70,8 @@ require 'fileutils'
 require 'optparse'
 require 'tempfile'
 require 'tmpdir'
+require 'securerandom'
+
 
 split_at = ARGV.index('--')
 if split_at
@@ -329,7 +331,10 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
     gemma_command_parts = "#{GEMMA_COMMAND}".split(' ')
 
   if options[:slurm]
-    # Assuming '/scratch' is the local scratch disk path
+    # Generate a unique directory name using UUID and HASH
+    unique_dir_name = "#{SecureRandom.uuid}_#{HASH}"
+    local_scratch_dir = "/mnt/local/jgallant/#{unique_dir_name}"
+    
     local_scratch_dir = "/mnt/local/jgallant/#{HASH}" # HASH to ensure unique directory
     #FileUtils::mkdir_p local_scratch_dir
 
