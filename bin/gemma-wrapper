@@ -334,8 +334,6 @@ invoke_gemma = lambda do |extra_args, cache_hit = false, chr = "full", permutati
     # Generate a unique directory name using UUID and HASH
     unique_dir_name = "#{SecureRandom.uuid}_#{HASH}"
     local_scratch_dir = "/mnt/local/jgallant/#{unique_dir_name}"
-    
-    local_scratch_dir = "/mnt/local/jgallant/#{HASH}" # HASH to ensure unique directory
     #FileUtils::mkdir_p local_scratch_dir
 
     # Insert the --bind option after "exec"
